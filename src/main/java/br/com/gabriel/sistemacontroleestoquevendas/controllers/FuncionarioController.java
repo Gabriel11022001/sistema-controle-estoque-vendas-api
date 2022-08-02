@@ -4,10 +4,7 @@ import br.com.gabriel.sistemacontroleestoquevendas.dtos.FuncionarioDTO;
 import br.com.gabriel.sistemacontroleestoquevendas.services.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,5 +18,9 @@ public class FuncionarioController {
     @PostMapping
     public ResponseEntity cadastrarFuncionario(@RequestBody FuncionarioDTO funcionarioDTO, HttpSession sessao) {
         return this.funcionarioService.cadastrarFuncionario(funcionarioDTO, sessao);
+    }
+    @GetMapping
+    public ResponseEntity buscarTodosFuncionarios(HttpSession sessao) {
+        return this.funcionarioService.buscarTodosFuncionarios(sessao);
     }
 }

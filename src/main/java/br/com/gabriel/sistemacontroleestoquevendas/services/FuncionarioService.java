@@ -3,8 +3,8 @@ package br.com.gabriel.sistemacontroleestoquevendas.services;
 import br.com.gabriel.sistemacontroleestoquevendas.dtos.FuncionarioDTO;
 import br.com.gabriel.sistemacontroleestoquevendas.models.Funcionario;
 import br.com.gabriel.sistemacontroleestoquevendas.repositories.FuncionarioRepository;
+import br.com.gabriel.sistemacontroleestoquevendas.utils.ConverteFuncionarioEmFuncionarioDTO;
 import br.com.gabriel.sistemacontroleestoquevendas.utils.ConverterFuncionarioDTOEmFuncionario;
-import br.com.gabriel.sistemacontroleestoquevendas.utils.ValidaFormularioCadastroFuncionario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +22,6 @@ public class FuncionarioService {
 
     public ResponseEntity cadastrarFuncionario(FuncionarioDTO funcionarioDTO, HttpSession sessao) {
 
-        // Validar os valores enviados por meio do formulário para cadastro de funcionários
-        ValidaFormularioCadastroFuncionario validaFormularioCadastroFuncionario = new ValidaFormularioCadastroFuncionario();
-        validaFormularioCadastroFuncionario.validarFormulario(funcionarioDTO);
         List<String> erros = new ArrayList<>();
         // Verificar se já existe um funcionário com o e-mail informado
         if (this.funcionarioRepository.buscarFuncionarioPeloEmail(funcionarioDTO.getEmail()) != null) {
@@ -63,5 +60,25 @@ public class FuncionarioService {
         }
         funcionarioDTO.setId(funcionario.getId());
         return new ResponseEntity(funcionarioDTO, HttpStatus.OK);
+    }
+    public ResponseEntity buscarTodosFuncionarios(HttpSession sessao) {
+        if (sessao.getAttribute("usuario_logado") == null) {
+            throw new RuntimeException("Você precisar estar logado para buscar todos os funcionários!");
+        }
+        FuncionarioDTO funcionarioLogado = (FuncionarioDTO) sessao.getAttribute("usuario_logado");
+        if (funcionarioLogado.getNivelAcesso() == 2) {
+            throw new RuntimeException("Você não possui acesso a listagem dos dados de todos os funcionários da empresa!");
+        }
+        List<Funcionario> funcionarios = this.funcionarioRepository.findAll();
+        if (funcionarios.size() == 0) {
+            return new ResponseEntity(new ArrayList(), HttpStatus.OK);
+        }
+        List<FuncionarioDTO> funcionariosDTO = new ArrayList<>();
+        for (Funcionario funcionario : funcionarios) {
+            FuncionarioDTO funcionarioDTO = new ConverteFuncionarioEmFuncionarioDTO()
+                    .converter(funcionario);
+            funcionariosDTO.add(funcionarioDTO);
+        }
+        return new ResponseEntity(funcionariosDTO, HttpStatus.OK);
     }
 }
