@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface FuncionarioRepository extends JpaRepository<Funcionario, Integer> {
 
     @Query("select f from Funcionario f where f.login = :login and f.senha = md5(:senha)")
@@ -19,4 +21,6 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Intege
     Funcionario buscarFuncionarioPeloLogin(@Param("login") String login);
     @Query("select f from Funcionario f where f.senha = md5(:senha)")
     Funcionario buscarFuncionarioPelaSenha(@Param("senha") String senha);
+    @Query("select f from Funcionario f where f.nome like %:nome%")
+    List<Funcionario> buscarFuncionariosQueContemNome(@Param("nome") String nome);
 }
