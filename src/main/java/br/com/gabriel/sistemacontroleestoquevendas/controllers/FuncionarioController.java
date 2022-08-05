@@ -1,9 +1,9 @@
 package br.com.gabriel.sistemacontroleestoquevendas.controllers;
 
 import br.com.gabriel.sistemacontroleestoquevendas.dtos.FuncionarioDTO;
+import br.com.gabriel.sistemacontroleestoquevendas.dtos.FuncionarioParaLoginDTO;
 import br.com.gabriel.sistemacontroleestoquevendas.services.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,28 +18,39 @@ public class FuncionarioController {
     private FuncionarioService funcionarioService;
 
     @PostMapping
-    public ResponseEntity cadastrarFuncionario(@RequestBody FuncionarioDTO funcionarioDTO, HttpSession sessao) {
-        return this.funcionarioService.cadastrarFuncionario(funcionarioDTO, sessao);
+    public ResponseEntity cadastrarFuncionario(@Valid @RequestBody FuncionarioDTO funcionarioDTO) {
+        return this.funcionarioService.cadastrarFuncionario(funcionarioDTO);
     }
     @GetMapping
-    public ResponseEntity buscarTodosFuncionarios(HttpSession sessao) {
-        return this.funcionarioService.buscarTodosFuncionarios(sessao);
+    public ResponseEntity buscarTodosFuncionarios() {
+        return this.funcionarioService.buscarTodosFuncionarios();
     }
     @GetMapping(value = "/{id}")
-    public ResponseEntity buscarFuncionarioPeloId(@Valid @PathVariable("id") Integer id, HttpSession sessao) {
-        return this.funcionarioService.buscarFuncionarioPeloId(id, sessao);
+    public ResponseEntity buscarFuncionarioPeloId(@Valid @PathVariable("id") Integer id) {
+        return this.funcionarioService.buscarFuncionarioPeloId(id);
     }
     @GetMapping(value = "/buscar-pelo-nome/{nome}")
-    public ResponseEntity buscarFuncionariosQueContemNome(@Valid @PathVariable("nome") String nome, HttpSession sessao) {
-        return this.funcionarioService.buscarFuncionarioQueContemNome(nome, sessao);
+    public ResponseEntity buscarFuncionariosQueContemNome(@Valid @PathVariable("nome") String nome) {
+        return this.funcionarioService.buscarFuncionarioQueContemNome(nome);
     }
     @GetMapping(value = "/buscar-pelo-cpf/{cpf}")
-    public ResponseEntity buscarFuncionarioPeloCpf(@Valid @PathVariable("cpf") String cpf, HttpSession sessao) {
-        return this.funcionarioService.buscarFuncionarioPeloCpf(cpf, sessao);
+    public ResponseEntity buscarFuncionarioPeloCpf(@Valid @PathVariable("cpf") String cpf) {
+        return this.funcionarioService.buscarFuncionarioPeloCpf(cpf);
     }
     @GetMapping(value = "/buscar-pelo-rg/{rg}")
-    public ResponseEntity buscarFuncionarioPeloRg(@Valid @PathVariable("rg") String rg, HttpSession sessao) {
+    public ResponseEntity buscarFuncionarioPeloRg(@Valid @PathVariable("rg") String rg) {
         return this.funcionarioService
-                .buscarFuncionarioPeloRg(rg, sessao);
+                .buscarFuncionarioPeloRg(rg);
+    }
+    @PutMapping
+    public ResponseEntity editarFuncionario(@Valid @RequestBody FuncionarioDTO funcionarioDTO) {
+        return this.funcionarioService.editarFuncionario(funcionarioDTO);
+    }
+    @PostMapping(value = "/buscar-funcionario-pelo-login-senha")
+    public ResponseEntity buscarFuncionarioPeloLoginESenha(@Valid @RequestBody FuncionarioParaLoginDTO funcionarioParaLoginDTO) {
+        return this.funcionarioService.buscarFuncionarioPeloLoginESenha(
+                funcionarioParaLoginDTO.getLogin(),
+                funcionarioParaLoginDTO.getSenha()
+        );
     }
 }

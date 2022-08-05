@@ -19,6 +19,8 @@ public class AppControllerAdvice {
     }
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity tratarRuntimeException(RuntimeException e) {
+        System.out.println(e.getMessage());
+        e.printStackTrace();
         return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)

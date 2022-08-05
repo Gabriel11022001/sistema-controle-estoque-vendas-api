@@ -19,7 +19,7 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Intege
     Funcionario buscarFuncionarioPeloRg(@Param("rg") String rg);
     @Query("select f from Funcionario f where f.login = :login")
     Funcionario buscarFuncionarioPeloLogin(@Param("login") String login);
-    @Query("select f from Funcionario f where f.senha = md5(:senha)")
+    @Query("select f from Funcionario f where f.senha = :senha")
     Funcionario buscarFuncionarioPelaSenha(@Param("senha") String senha);
     @Query("select f from Funcionario f where f.nome like %:nome%")
     List<Funcionario> buscarFuncionariosQueContemNome(@Param("nome") String nome);
